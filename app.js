@@ -1,13 +1,14 @@
 let id = "1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8";
-const myWords = [
-  "Hello",
-  "World",
-  "JavaScript",
-  "Code",
-  "HTML",
-  "Document",
-  "Tailwind",
-];
+const myWords = ["Hello", "World"];
+// const myWords = [
+//   "Hello",
+//   "World",
+//   "JavaScript",
+//   "Code",
+//   "HTML",
+//   "Document",
+//   "Tailwind",
+// ];
 const output = document.querySelector(".output");
 const btn = document.createElement("button");
 
@@ -37,13 +38,17 @@ output.append(startBtn);
 
 if (urlParams.get("id")) {
   id = urlParams.get("id");
-  createShareLink(id);
+  // createShareLink(id);
+  sheetID.value = id;
   div1.style.display = "none";
 }
-
 sheetID.value = id;
 
 btn.addEventListener("click", (e) => {
+  loadListFromSheet(true);
+});
+
+function loadListFromSheet(boo) {
   console.log(sheetID.value);
   const url =
     "https://spreadsheets.google.com/feeds/list/" +
@@ -58,7 +63,10 @@ btn.addEventListener("click", (e) => {
   fetch(url)
     .then((req) => req.json())
     .then((json) => {
-      createShareLink(id);
+      messageOut("New World List Loaded");
+      if (boo) {
+        createShareLink(id);
+      }
       console.log(json["feed"]["entry"]);
       myWords.length = 0;
       let enty = json.feed.entry;
@@ -73,19 +81,22 @@ btn.addEventListener("click", (e) => {
           myWords.push(...holder);
         }
       });
-
+      if (boo) {
+        div.append(span);
+      }
+      span.textContent = myWords.join(", ");
       btn.disabled = false;
       console.log(myWords);
     })
     .catch((err) => {
       div.textContent = "Error: List not loaded  using default list ";
+      messageOut("Error Loading List");
       btn.disabled = false;
-
       const span = document.createElement("span");
       div.append(span);
       span.textContent = myWords.join(", ");
     });
-});
+}
 
 function startGame() {
   gameArea.style.display = "block";
@@ -93,7 +104,9 @@ function startGame() {
   output.style.display = "none";
   console.log(myWords);
   if (myWords.length <= 0) {
-    console.log("Game Over");
+    messageOut("Game Over");
+    gameArea.style.display = "none";
+    output.style.display = "block";
   } else {
     myWords.sort(() => {
       return 0.5 - Math.random();
@@ -123,18 +136,22 @@ function sorter(word) {
 
 function checkVal() {
   console.log("working");
-  let guess = gameArea.querySelector("input").value;
+  let guessEle = gameArea.querySelector("input");
+  let guess = guessEle.value;
   console.log(guess);
+  guessEle.value = "";
   guess = guess.toLowerCase();
 
   if (guess == game.sel) {
-    messageOut("correct");
+    messageOut("correct - words left " + game.wordsLeft);
+    startGame();
   } else {
     messageOut("incorrect");
   }
 }
 
 function messageOut(val) {
+  console.log(val);
   mes.innerHTML = val;
 }
 
