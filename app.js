@@ -76,15 +76,23 @@ btn.addEventListener("click", (e) => {
       enty.forEach((el) => {
         console.log(el.title["$t"]);
         // let temp = el["gsx$word"]["$t"];
+
         let temp = el.title["$t"];
         console.log(temp.includes(":"));
         if (temp.length > 0 && !temp.includes(":")) {
           myWords.push(temp);
         }
       });
+
+      btn.disabled = false;
       console.log(myWords);
     })
     .catch((err) => {
-      console.log("List not loaded");
+      div.textContent = "Error: List not loaded  using default list";
+      btn.disabled = false;
+
+      const span = document.createElement("span");
+      div.append(span);
+      span.textContent = myWords.join(", ");
     });
 });
