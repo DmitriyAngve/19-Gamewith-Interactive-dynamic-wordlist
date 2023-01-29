@@ -18,3 +18,18 @@ input {
   text-decoration: none;
   padding: 5px;
 }
+
+.wordOutput {
+  text-align: center;
+  font-size: 2em;
+}
+
+.gameArea input {
+  font-size: 1.2em;
+}
+
+.gameArea {
+  background-color: aliceblue;
+  padding: 10px;
+  border: 1px solid #ddd;
+}

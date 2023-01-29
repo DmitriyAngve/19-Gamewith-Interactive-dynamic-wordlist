@@ -1,56 +1,23 @@
-// // const id = "1Ba8d3_QqLnZf7ciyT8QLoOlPkKq6mj_V7jBYooAu0jw";
-// const id = "1Ba8d3_QqLnZf7ciyT8QLoOlPkKq6mj_V7jBYooAu0jw";
-// // const url =
-// //   "https://spreadsheets.google.com/feeds/list/" +
-// //   id +
-// //   "/1/public/values?alt=json";
-// //
-
-// // let url = "https://docs.google.com/spreadsheets/d/" + id + "/gviz/tq?";
-// const url =
-//   "https://script.google.com/macros/s/AKfycbxsfxUxcPTYxc524HizTMCo1LVlWT8BhivW5rP57BmKxlBQUVSF6Td0ri-LFeoGDDGb/exec";
-
-// // const url =
-// //   "https://docs.google.com/spreadsheets/d/1Ba8d3_QqLnZf7ciyT8QLoOlPkKq6mj_V7jBYooAu0jw/edit?usp=sharing";
-// console.log(url);
-// // const output = document.querySelector(".output");
-// // const query = encodeURIComponent("Select A, B, C");
-// // console.log(query);
-// // // url = url + "&tq=" + query;
-// // fetch(url)
-// //   .then((res) => res.text())
-// //   .then((rep) => {
-// //     const data = JSON.parse(rep.substring(47).slice(0, -2));
-// //     const row = document.createElement("tr");
-// //     output.append(row);
-// //     data.table.cols.forEach((heading) => {
-// //       const cell = document.createElement("td");
-// //       cell.textContent = heading.label;
-// //       row.append(cell);
-// //     });
-// //     data.table.rows.forEach((main) => {
-// //       const container = document.createElement("tr");
-// //       output.append(container);
-// //       main.c.forEach((ele) => {
-// //         const cell = document.createElement("td");
-// //         cell.textContent = ele.v;
-// //         container.append(cell);
-// //       });
-// //     });
-// //     console.log(data);
-// //     console.log(JSON.stringify(data));
-// //   });
-
-//https://docs.google.com/spreadsheets/d/1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8/edit?usp=sharing
-
 let id = "1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8";
-const myWords = ["Hello World", "JavaScript Code"];
+const myWords = [
+  "Hello",
+  "World",
+  "JavaScript",
+  "Code",
+  "HTML",
+  "Document",
+  "Tailwind",
+];
 const output = document.querySelector(".output");
 const btn = document.createElement("button");
 
 const startBtn = document.createElement("button");
 startBtn.textContent = "Start Game";
 startBtn.addEventListener("click", startGame);
+
+const game = { sel: "", scramble: "", wordsLeft: 0 };
+const gameArea = document.querySelector(".gameArea");
+gameArea.style.display = "none";
 
 btn.textContent = "Load Sheet by ID";
 const sheetID = document.createElement("input");
@@ -114,7 +81,22 @@ btn.addEventListener("click", (e) => {
 });
 
 function startGame() {
+  gameArea.style.display = "block";
   console.log("start game");
+  output.style.display = "none";
+  console.log(myWords);
+  if (myWords.length <= 0) {
+    console.log("Game Over");
+  } else {
+    game.sel = myWords.shift();
+    game.wordsLeft = myWords.length;
+    game.scramble = sorter(game.sel);
+    gameArea.querySelector("div").textContent = game.sel; // select the first "div" and update the textContent to have the game selected word
+  }
+}
+
+function sorter(word) {
+  return word;
 }
 
 function createShareLink(myId) {
