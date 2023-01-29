@@ -43,17 +43,31 @@
 
 //https://docs.google.com/spreadsheets/d/1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8/edit?usp=sharing
 
-const id = "1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8";
+let id = "1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8";
 const myWords = ["Hello World", "JavaScript Code"];
 const output = document.querySelector(".output");
 const btn = document.createElement("button");
+
+const startBtn = document.createElement("button");
+startBtn.textContent = "Start Game";
+startBtn.addEventListener("click", startGame);
+
 btn.textContent = "Load Sheet by ID";
 const sheetID = document.createElement("input");
 sheetID.setAttribute("type", "text");
-sheetID.value = id;
 
+const qs = window.location.search;
+
+const urlParams = new URLSearchParams(qs);
+if (urlParams.get("id")) {
+  id = urlParams.get("id");
+  createShareLink(id);
+}
+
+sheetID.value = id;
 output.append(sheetID);
 output.append(btn);
+output.append(startBtn);
 
 btn.addEventListener("click", (e) => {
   console.log(sheetID.value);
@@ -70,6 +84,7 @@ btn.addEventListener("click", (e) => {
   fetch(url)
     .then((req) => req.json())
     .then((json) => {
+      createShareLink(id);
       console.log(json["feed"]["entry"]);
       myWords.length = 0;
       let enty = json.feed.entry;
@@ -80,7 +95,8 @@ btn.addEventListener("click", (e) => {
         let temp = el.title["$t"];
         console.log(temp.includes(":"));
         if (temp.length > 0 && !temp.includes(":")) {
-          myWords.push(temp);
+          let holder = temp.split(" ");
+          myWords.push(...holder);
         }
       });
 
@@ -88,7 +104,7 @@ btn.addEventListener("click", (e) => {
       console.log(myWords);
     })
     .catch((err) => {
-      div.textContent = "Error: List not loaded  using default list";
+      div.textContent = "Error: List not loaded  using default list ";
       btn.disabled = false;
 
       const span = document.createElement("span");
@@ -96,3 +112,24 @@ btn.addEventListener("click", (e) => {
       span.textContent = myWords.join(", ");
     });
 });
+
+function startGame() {
+  console.log("start game");
+}
+
+function createShareLink(myId) {
+  console.log(window.location.origin);
+  let linkVal = window.location.origin + "?id=" + myId;
+  const myURL = document.createElement("input");
+  const aLink = document.createElement("a");
+  aLink.textContent = "Shareable Link " + linkVal;
+  aLink.classList.add("myLink");
+  aLink.setAttribute("href", linkVal);
+  aLink.setAttribute("target", "_blank");
+  myURL.value = linkVal;
+  myURL.addEventListener("focus", (e) => {
+    myURL.select();
+  });
+  output.append(aLink);
+  output.append(myURL);
+}

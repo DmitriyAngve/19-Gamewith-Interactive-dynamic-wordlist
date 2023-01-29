@@ -3,9 +3,18 @@ button {
   width: 80%;
   margin: auto;
   display: block;
+  margin-bottom: 10px;
 }
 
 input {
   font-size: 0.7em;
   text-align: center;
+}
+
+.myLink {
+  font-size: 0.6em;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+  padding: 5px;
 }
