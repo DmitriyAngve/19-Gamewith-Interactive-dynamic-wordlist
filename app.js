@@ -17,7 +17,10 @@ startBtn.addEventListener("click", startGame);
 
 const game = { sel: "", scramble: "", wordsLeft: 0 };
 const gameArea = document.querySelector(".gameArea");
+const mes = document.querySelector(".message");
 gameArea.style.display = "none";
+
+gameArea.querySelector("button").addEventListener("click", checkVal);
 
 btn.textContent = "Load Sheet by ID";
 const sheetID = document.createElement("input");
@@ -26,15 +29,19 @@ sheetID.setAttribute("type", "text");
 const qs = window.location.search;
 
 const urlParams = new URLSearchParams(qs);
+const div1 = document.createElement("div");
+output.append(div1);
+div1.append(sheetID);
+div1.append(btn);
+output.append(startBtn);
+
 if (urlParams.get("id")) {
   id = urlParams.get("id");
   createShareLink(id);
+  div1.style.display = "none";
 }
 
 sheetID.value = id;
-output.append(sheetID);
-output.append(btn);
-output.append(startBtn);
 
 btn.addEventListener("click", (e) => {
   console.log(sheetID.value);
@@ -88,15 +95,47 @@ function startGame() {
   if (myWords.length <= 0) {
     console.log("Game Over");
   } else {
+    myWords.sort(() => {
+      return 0.5 - Math.random();
+    });
     game.sel = myWords.shift();
+    game.sel = game.sel.toLowerCase();
     game.wordsLeft = myWords.length;
     game.scramble = sorter(game.sel);
-    gameArea.querySelector("div").textContent = game.sel; // select the first "div" and update the textContent to have the game selected word
+    gameArea.querySelector("div").textContent = game.scramble; // select the first "div" and update the textContent to have the game selected word
   }
 }
 
 function sorter(word) {
-  return word;
+  word = word.toLowerCase();
+  let temp = word.split("");
+  console.log(temp);
+  temp.sort(() => {
+    return 0.5 - Math.random();
+  });
+  temp = temp.join("");
+  if (word == temp) {
+    return sorter(temp);
+  }
+  console.log(temp);
+  return temp;
+}
+
+function checkVal() {
+  console.log("working");
+  let guess = gameArea.querySelector("input").value;
+  console.log(guess);
+  guess = guess.toLowerCase();
+
+  if (guess == game.sel) {
+    messageOut("correct");
+  } else {
+    messageOut("incorrect");
+  }
+}
+
+function messageOut(val) {
+  mes.innerHTML = val;
 }
 
 function createShareLink(myId) {
