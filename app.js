@@ -1,52 +1,53 @@
 let id = "1o4vIdjHUePyU90AAdjBTblO73Hn-de1sU3_KnBHr5l8";
-const myWords = ["Hello", "World"];
-// const myWords = [
-//   "Hello",
-//   "World",
-//   "JavaScript",
-//   "Code",
-//   "HTML",
-//   "Document",
-//   "Tailwind",
-// ];
+
+const myWords = [
+  "Hello",
+  "World",
+  "JavaScript",
+  "Code",
+  "HTML",
+  "Document",
+  "Tailwind",
+];
 const output = document.querySelector(".output");
 const btn = document.createElement("button");
 
 const startBtn = document.createElement("button");
 startBtn.textContent = "Start Game";
 startBtn.addEventListener("click", startGame);
-
-const game = { sel: "", scramble: "", wordsLeft: 0 };
+const game = {
+  sel: "",
+  scramble: "",
+  wordsLeft: 0,
+};
 const gameArea = document.querySelector(".gameArea");
 const mes = document.querySelector(".message");
 gameArea.style.display = "none";
-
 gameArea.querySelector("button").addEventListener("click", checkVal);
-
-btn.textContent = "Load Sheet by ID";
+btn.textContent = "load Sheet by id";
 const sheetID = document.createElement("input");
 sheetID.setAttribute("type", "text");
-
 const qs = window.location.search;
-
-const urlParams = new URLSearchParams(qs);
+const urlParas = new URLSearchParams(qs);
 const div1 = document.createElement("div");
 output.append(div1);
 div1.append(sheetID);
 div1.append(btn);
 output.append(startBtn);
 
-if (urlParams.get("id")) {
-  id = urlParams.get("id");
-  // createShareLink(id);
-  sheetID.value = id;
-  div1.style.display = "none";
-}
-sheetID.value = id;
-
 btn.addEventListener("click", (e) => {
   loadListFromSheet(true);
 });
+
+if (urlParas.get("id")) {
+  id = urlParas.get("id");
+  //createShareLink(id);
+  sheetID.value = id;
+  div1.style.display = "none";
+  loadListFromSheet(false);
+} else {
+  sheetID.value = id;
+}
 
 function loadListFromSheet(boo) {
   console.log(sheetID.value);
@@ -56,24 +57,21 @@ function loadListFromSheet(boo) {
     "/1/public/values?alt=json";
   btn.disabled = true;
   console.log(url);
-
   const div = document.createElement("div");
   output.append(div);
-
   fetch(url)
     .then((req) => req.json())
     .then((json) => {
-      messageOut("New World List Loaded");
+      messageOut("New Word List Loaded");
       if (boo) {
-        createShareLink(id);
+        createShareLink(sheetID.value);
       }
       console.log(json["feed"]["entry"]);
       myWords.length = 0;
       let enty = json.feed.entry;
       enty.forEach((el) => {
         console.log(el.title["$t"]);
-        // let temp = el["gsx$word"]["$t"];
-
+        //let temp = el['gsx$word']['$t'];
         let temp = el.title["$t"];
         console.log(temp.includes(":"));
         if (temp.length > 0 && !temp.includes(":")) {
@@ -81,6 +79,7 @@ function loadListFromSheet(boo) {
           myWords.push(...holder);
         }
       });
+      const span = document.createElement("span");
       if (boo) {
         div.append(span);
       }
@@ -89,8 +88,8 @@ function loadListFromSheet(boo) {
       console.log(myWords);
     })
     .catch((err) => {
-      div.textContent = "Error: List not loaded  using default list ";
-      messageOut("Error Loading List");
+      div.textContent = "Error List not loaded using Default List : ";
+      messageOut("Error Loading  List");
       btn.disabled = false;
       const span = document.createElement("span");
       div.append(span);
@@ -115,7 +114,7 @@ function startGame() {
     game.sel = game.sel.toLowerCase();
     game.wordsLeft = myWords.length;
     game.scramble = sorter(game.sel);
-    gameArea.querySelector("div").textContent = game.scramble; // select the first "div" and update the textContent to have the game selected word
+    gameArea.querySelector("div").textContent = game.scramble;
   }
 }
 
@@ -138,10 +137,9 @@ function checkVal() {
   console.log("working");
   let guessEle = gameArea.querySelector("input");
   let guess = guessEle.value;
-  console.log(guess);
-  guessEle.value = "";
   guess = guess.toLowerCase();
-
+  guessEle.value = "";
+  console.log(guess);
   if (guess == game.sel) {
     messageOut("correct - words left " + game.wordsLeft);
     startGame();
